@@ -96,7 +96,7 @@ venv.bak/
 
 # mkdocs documentation
 /site
-
+ss/
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -112,7 +112,5 @@ dmypy.json
 .idea
 *.pyc
 media/
-voting/migrations/*
-account/migrations/*
-# static/
+
 # README.md

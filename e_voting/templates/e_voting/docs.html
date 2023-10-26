@@ -1,0 +1,52 @@
+{% extends "e_voting/base.html" %}
+<!---->
+{% load static %} {% block title %}
+<!---->
+{{ block.super }} Documentation {% endblock title %}
+<!---->
+{% block content %}
+<div class="large-12-columns">
+  <div class="row"><h2>Documentation</h2></div>
+
+  <div class="row">
+    <p>
+      The JepshaElector Voting technology is based on advanced peer-reviewed
+      cryptographic techniques that enable your vote to remain secret while
+      providing an intelligent ballot tracker to let you verify that your ballot
+      was received and counted properly:
+    </p>
+
+    <ul>
+      <li>
+        <a href="">technical documentation</a>
+      </li>
+      <li>
+        <a href="">original peer-reviewed (Usenix Security 2008)</a>
+      </li>
+      <li>
+        <a href="">Pyrios</a>, a Go library by <a href="">Tom Roeder</a> that
+        verifies Helios elections.
+      </li>
+      <li>
+        <a href="">Helios Election Monitor</a>, produced by the Universite
+        catholique de Louvain.
+      </li>
+    </ul>
+
+    <p>Helios has been covered in the press:</p>
+
+    <ul>
+      <li>
+        <a href="">KCBS News Interview, May 2010</a>
+      </li>
+      <li>
+        <a href="">Harvard Magazine, April 2010</a>
+      </li>
+      <li>
+        <a href="">Ynet, Israeli Press, June 2009</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock content %}
+<!---->

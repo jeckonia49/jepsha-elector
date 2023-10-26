@@ -9,30 +9,40 @@ class AccountCheckMiddleWare(MiddlewareMixin):
         modulename = view_func.__module__
         user = request.user  # Who is the current user ?
         if user.is_authenticated:
-            if user.user_type == '1':  # Admin
-                if modulename == 'voting.views':
+            if user.user_type == "1":  # Admin
+                if modulename == "voting.views":
                     error = True
-                    if request.path == reverse('fetch_ballot'):
+                    if request.path == reverse("fetch_ballot"):
                         pass
                     else:
                         messages.error(
-                            request, "You do not have access to this resource")
-                        return redirect(reverse('adminDashboard'))
-            elif user.user_type == '2':  # Voter
-                if modulename == 'administrator.views':
-                    messages.error(
-                        request, "You do not have access to this resource")
-                    return redirect(reverse('voterDashboard'))
+                            request, "You do not have access to this resource"
+                        )
+                        return redirect(reverse("adminDashboard"))
+            elif user.user_type == "2":  # Voter
+                if modulename == "administrator.views":
+                    messages.error(request, "You do not have access to this resource")
+                    return redirect(reverse("voterDashboard"))
             else:  # None of the aforementioned ? Please take the user to login page
-                return redirect(reverse('account_login'))
+                return redirect(reverse("home"))  # TODO UPDATED
+                # return redirect(reverse('account_login'))
         else:
             # If the path is login or has anything to do with authentication, pass
-            if request.path == reverse('account_login') or request.path == reverse('account_register') or modulename == 'django.contrib.auth.views' or request.path == reverse('account_login'):
+            if (
+                request.path == reverse("account_login")
+                or request.path == reverse("account_register")
+                or modulename == "django.contrib.auth.views"
+                or request.path == reverse("home")
+                # or request.path == reverse("account_login")
+            ):
                 pass
-            elif modulename == 'administrator.views' or modulename == 'voting.views':
+            elif modulename == "administrator.views" or modulename == "voting.views":
                 # If visitor tries to access administrator or voters functions
                 messages.error(
-                    request, "You need to be logged in to perform this operation")
-                return redirect(reverse('account_login'))
+                    request, "You need to be logged in to perform this operation"
+                )
+                return redirect(reverse("home"))
+                # return redirect(reverse("account_login"))
             else:
-                return redirect(reverse('account_login'))
+                return redirect(reverse("home"))
+                # return redirect(reverse("account_login"))

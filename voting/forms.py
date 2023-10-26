@@ -6,16 +6,23 @@ from account.forms import FormSettings
 class VoterForm(FormSettings):
     class Meta:
         model = Voter
-        fields = ['phone']
+        fields = ["admission_number", "year_of_study"]
 
 
 class PositionForm(FormSettings):
     class Meta:
         model = Position
-        fields = ['name', 'max_vote']
+        fields = ["name", "max_vote"]
 
 
 class CandidateForm(FormSettings):
     class Meta:
         model = Candidate
-        fields = ['fullname', 'bio', 'position', 'photo']
+        fields = [
+            "fullname",
+            "admission_number",
+            "year_of_study",
+            "bio",
+            "position",
+            "photo",
+        ]

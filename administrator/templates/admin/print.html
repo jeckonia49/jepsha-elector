@@ -1,46 +1,68 @@
+{% extends 'root.html' %}
+<!---->
 {% load static %}
-<html lang="en">
-<head>
-  <title>{{ title }}</title>
-  <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"">
+<!---->
+{% block title %} {{ block.super }} Results {% endblock title %}
+<!---->
 
-</head>
-<body>
-  
-  <div style="margin-top: -50px;" class="text-center font-weight-bold h1">
-  {{ title }} Result
+{% block content %}
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-body">
+          <table id="example1" class="">
+            {% for key, value in positions.items %}
+            <table id="example1" class="text-center table table-bordered">
+              <thead>
+                <tr>
+                  <th
+                    style="background-color: aqua"
+                    class="text-center"
+                    colspan="5"
+                  >
+                    {{ key }} | Maximum Number Of Winners : {{ value.max_vote }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="text-center" style="width: 10%">SN</th>
+                  <th class="text-center" style="width: 15%">Candidate Name</th>
+                  <th class="text-center" style="width: 10%">Candidate Year</th>
+                  <th class="text-center" style="width: 20%">
+                    Candidate Adm No
+                  </th>
+                  <th class="text-center" style="width: 10%">Votes Recorded</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for data in value.candidate_data %} {# Loop 2 #}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ data.name }}</td>
+                  <td>{{ data.contestant.year_of_study }}</td>
+                  <td>{{ data.contestant.admission_number }}</td>
+                  <td>{{ data.votes }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5">No Candidates Vying For This Position</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <th class="text-center" colspan="5">
+                    {{ value.winner|safe }}
+                    <!---->
+                    {% if value.winner == value.contestant.fullname %}
+                    {{value.contestant.admission_number}} {% endif %}
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  <table id="example1" class="">
-{% for key, value in positions.items  %} {# Loop 1 #}
-<table id="example1" class="text-center table table-bordered">
-<tr>
-  <th style="background-color: aqua;" class="text-center" colspan="3">{{ key }} | Maximum Number Of Winners : {{ value.max_vote }}</th>
-  </tr>
-  <tr>
-  <th class="text-center" style="width: 5%;">SN</th>
-  <th class="text-center" style="width: 60%;">Candidate Name </th>
-  <th class="text-center" style="width: 35%;">Total Votes Recorded</th>
-</tr>
-{% for data  in value.candidate_data %} {# Loop 2 #}
-  <tr>
-    <td>{{ forloop.counter }}</td>
-    <td>{{ data.name }}</td>
-    <td>{{ data.votes }}</td>
-  </tr>
-  {% empty %}
-  <tr>
-    <td colspan="3">No Candidates Vying For This Position</td>
-  </tr>
-{% endfor %} {# Please Close Loop 2  #}
-
-<tr>
-  <th class="text-center" colspan="3"> {{ value.winner|safe }} </th>
-  </tr>
-  </table>
-{% endfor %} {# Please Close Loop 1  #}
-
-</tbody>
-  </table>
-
-</body>
-</html>
+</section>
+{% endblock content %}

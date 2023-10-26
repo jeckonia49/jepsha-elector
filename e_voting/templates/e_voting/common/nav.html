@@ -1,0 +1,40 @@
+{% load static %}
+
+<nav class="top-bar">
+  <ul class="title-area">
+    <!-- Title Area -->
+    <li class="name">
+      <h1>
+        <a href="{% url 'home' %}"><img src="{% static 'tinylogo.png' %}" /></a>
+      </h1>
+    </li>
+    <li class="toggle-topbar menu-icon">
+      <a href="#" onclick="$('nav').toggleClass('expanded'); return false;"
+        ><span>Menu</span></a
+      >
+    </li>
+  </ul>
+
+  <section class="top-bar-section">
+    <!-- Right Nav Section -->
+    <ul class="right"></ul>
+
+    <ul>
+      <li><a href="{% url 'home' %}">JepshaElector</a></li>
+
+      <li class="divider"></li>
+      <li class="active"><a href="{% url 'about-us' %}">About</a></li>
+      <li class="divider"></li>
+
+      <li class="divider"></li>
+      <li><a href="{% url 'docs' %}">Docs</a></li>
+      <li class="divider"></li>
+      <li><a href="{% url 'faqs' %}">FAQ</a></li>
+      <li class="divider"></li>
+      <li><a href="{% url 'privacy' %}">Privacy</a></li>
+
+      <li class="divider"></li>
+      <li><a href="mailto:help@jepshaelector.jkuat.ac.ke">Help!</a></li>
+    </ul>
+  </section>
+</nav>
