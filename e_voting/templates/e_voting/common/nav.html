@@ -22,6 +22,7 @@
     <ul>
       <li><a href="{% url 'home' %}">JepshaElector</a></li>
 
+      {% if request.user.is_authenticated %}
       <li class="divider"></li>
       <li class="active"><a href="{% url 'about-us' %}">About</a></li>
       <li class="divider"></li>
@@ -35,6 +36,7 @@
 
       <li class="divider"></li>
       <li><a href="mailto:help@jepshaelector.jkuat.ac.ke">Help!</a></li>
+      {% endif %}
     </ul>
   </section>
 </nav>

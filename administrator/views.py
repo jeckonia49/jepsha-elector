@@ -60,7 +60,7 @@ class PrintView(TemplateView):
                 votes = Votes.objects.filter(candidate=candidate).count()
                 this_candidate_data["name"] = candidate.fullname
                 this_candidate_data["votes"] = votes
-                this_candidate_data['contestant'] = candidate
+                this_candidate_data["contestant"] = candidate
                 candidate_data.append(this_candidate_data)
             print(
                 "Candidate Data For  ", str(position.name), " = ", str(candidate_data)
@@ -332,7 +332,6 @@ class BallotPositionView(TemplateView):
         return context
 
 
-
 def update_ballot_position(request, position_id, up_or_down):
     try:
         context = {"error": False}
@@ -368,7 +367,6 @@ def update_ballot_position(request, position_id, up_or_down):
     return JsonResponse(context)
 
 
-
 def ballot_title(request):
     from urllib.parse import urlparse
 
@@ -399,12 +397,9 @@ class VotesListView(TemplateView):
         return context
 
 
-
 class ResetVotesView(TemplateView):
     def get(self, request, *args, **kwargs):
         Votes.objects.all().delete()
         Voter.objects.all().update(voted=False, verified=False, otp=None)
         messages.success(request, "All votes has been reset")
         return redirect(reverse("viewVotes"))
-
-
