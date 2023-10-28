@@ -38,6 +38,12 @@
           ><span class="glyphicon glyphicon-lock"></span> <span>Votes</span></a
         >
       </li>
+      <li class="">
+        <a href="{% url 'viewMessages' %}"
+          ><span class="glyphicon glyphicon-book"></span>
+          <span>Messages</span></a
+        >
+      </li>
       <li class="header">MANAGE</li>
       <li class="">
         <a href="{% url 'adminViewVoters' %}"
@@ -63,6 +69,17 @@
       <li class="">
         <a href="#config" data-toggle="modal"
           ><i class="fa fa-cog"></i> <span>Election Title</span></a
+        >
+      </li>
+
+      {% endif %}
+      <!---->
+
+      {% if request.user.user_type == '2' %}
+      <li class="header">WHISTLE BLOWING</li>
+      <li class="">
+        <a href="{% url 'complaint' %}"
+          ><i class="fa fa-file-text"></i> <span>Report</span></a
         >
       </li>
 

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+<!---->
+{% load static %} {% block title %}{{ block.super }} Home {% endblock title %}
+<!---->
+{% block content %}
+<div class="row">
+  <div class="large-5 columns large-centered">
+    <a href=""><img border="0" src="{% static 'logo.png' %}" /></a>
+  </div>
+</div>
+<div class="row">&nbsp;</div>
+
+<div class="large-9 columns">
+  <p>JepshaElector offers <b>verifiable online elections</b>.</p>
+
+  <p>
+    We believe democracy is important, whether it’s your book club,
+    parent-teacher association, student government, workers’ union, or state. So
+    we’ve made truly verifiable elections as easy as everything else on the Web.
+  </p>
+
+  <p>Helios elections are:</p>
+
+  <ul class="disc">
+    <li><b>private</b>: no one knows how you voted.</li>
+    <li><b>verifiable</b>: each voter gets a tracking number.</li>
+    <li>
+      <b>proven</b>: Helios is open-source, vetted by top-tier experts, and in
+      use by major organizations.
+    </li>
+  </ul>
+
+  <p>We are proud to be startup online voting platform</p>
+</div>
+<div class="large-3 columns" id="mystuff">
+  <div class="row">&nbsp;</div>
+  <div class="panel row">
+    <h5>Log In to Start Voting</h5>
+
+    <button>
+      <a href="{% url 'account_login' %}" style="color: white">Vote Now</a>
+    </button>
+  </div>
+</div>
+{% endblock content %}
+<!---->
+<!---->

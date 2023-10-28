@@ -1,0 +1,62 @@
+{% extends 'root.html' %} {% block content %}
+<section class="content">
+  {% comment %}
+  <h1 class="page-header text-center title"><b>WHISTLE BLOWING</b></h1>
+  {% endcomment %}
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+      <div
+        class="alert alert-danger alert-dismissible"
+        id="alert"
+        style="display: none"
+      >
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-hidden="true"
+        >
+          &times;
+        </button>
+        <span class="message"></span>
+      </div>
+
+      <!-- Voting Ballot -->
+      <form
+        method="POST"
+        style="width: 100%; padding-top: 4rem !important"
+        action=""
+      >
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="box box-solid" id="">
+              <div class="box-header with-border">
+                <h3 class="box-title">
+                  <b>Report any mischievious activity or complaint to us</b>
+                </h3>
+              </div>
+              <div class="box-body">
+                As we strie to automate most process, we also understand there
+                are some of use who will try to take advantage of loophole. For
+                any complaint do not hesistate to alert us. Your identify is
+                anonimous to us but will take keen consideration in the
+                compalaint and address it as soon as we can.
+                <hr />
+                <div class="form-group has-feedback">{{form.complaint}}</div>
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-flat"
+                  name="verify"
+                >
+                  <i class="glyphicon glyphicon-ok"></i> Verify OTP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock content %}

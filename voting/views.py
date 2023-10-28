@@ -8,7 +8,9 @@ from django.conf import settings
 from django.http import JsonResponse
 import requests
 import json
-
+from django.contrib.auth import get_user
+from administrator.forms import ElectionMailBoxForm
+from django.views.generic import TemplateView, View
 # Create your views here.
 
 
@@ -158,11 +160,43 @@ def dashboard(request):
         return redirect(reverse("show_ballot"))
 
 
+
+class ElectionMailBoxView(TemplateView):
+    template_name = "voting/voter/report.html"
+    form_class = ElectionMailBoxForm
+    voter = Voter
+
+    def get_custom_user(self):
+        return get_user(self.request)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = "Complaint/Reporting" 
+        context["form"] = self.form_class()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.plaintif = Voter.objects.get(admin=self.get_custom_user())
+            instance.save()
+            form.save()
+            messages.success(request, f"Your message was successfully submitted. Thanks!")
+            return redirect(reverse("voterDashboard"))
+        messages.success(request, f"An error occurred will submitting your message. Please try again.")
+        return redirect(reverse("voterDashboard"))
+
+
+
+    
+
+
 # def verify(request):
 #     context = {
-#         'page_title': 'OTP Verification'
+#         'page_title': 'Complaint/Reporting'
 #     }
-#     return render(request, "voting/voter/verify.html", context)
+#     return render(request, "voting/voter/report.html", context)
+
 
 
 # def resend_otp(request):
@@ -444,3 +478,4 @@ def submit_ballot(request):
         voter.save()
         messages.success(request, "Thanks for voting")
         return redirect(reverse("voterDashboard"))
+

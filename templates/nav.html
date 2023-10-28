@@ -1,0 +1,42 @@
+{% load static %}
+
+<nav class="top-bar">
+  <ul class="title-area">
+    <!-- Title Area -->
+    <li class="name">
+      <h1>
+        <a href="{% url 'home' %}"><img src="{% static 'tinylogo.png' %}" /></a>
+      </h1>
+    </li>
+    <li class="toggle-topbar menu-icon">
+      <a href="#" onclick="$('nav').toggleClass('expanded'); return false;"
+        ><span>Menu</span></a
+      >
+    </li>
+  </ul>
+
+  <section class="top-bar-section">
+    <!-- Right Nav Section -->
+    <ul class="right"></ul>
+
+    <ul>
+      <li><a href="{% url 'home' %}">JepshaElector</a></li>
+
+      {% if request.user.is_authenticated %}
+      <li class="divider"></li>
+      <li class="{% if request.resolver_match.view_name == "about-us" %}active{% endif %}"><a href="{% url 'about-us' %}">About</a></li>
+      <li class="divider"></li>
+
+      <li class="divider"></li>
+      <li class="{% if request.resolver_match.view_name == 'docs' %}active{% endif %}"><a href="{% url 'docs' %}">Docs</a></li>
+      <li class="divider"></li>
+      <li class="{% if request.resolver_match.view_name == 'faqs' %}active{% endif %}"><a href="{% url 'faqs' %}">FAQ</a></li>
+      <li class="divider"></li>
+      <li class="{% if request.resolver_match.view_name == 'privacy' %}active{% endif %}"><a href="{% url 'privacy' %}">Privacy</a></li>
+
+      <li class="divider"></li>
+      <li><a href="mailto:help@jepshaelector.jkuat.ac.ke">Help!</a></li>
+      {% endif %}
+    </ul>
+  </section>
+</nav>

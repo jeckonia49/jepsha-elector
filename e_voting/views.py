@@ -3,28 +3,28 @@ from django.shortcuts import redirect, render
 
 
 class HeliosView(TemplateView):
-    template_name = "e_voting/home.html"
+    template_name = "home.html"
 
 
 class JepshaElectorPrivacyView(TemplateView):
-    template_name = "e_voting/privacy.html"
+    template_name = "privacy.html"
 
 
 class JepshaElectorAboutView(TemplateView):
-    template_name = "e_voting/about.html"
+    template_name = "about.html"
 
 
 class JepshaElectorFaqView(TemplateView):
-    template_name = "e_voting/faq.html"
+    template_name = "faq.html"
 
 
 class JepshaElectorDocsView(TemplateView):
-    template_name = "e_voting/docs.html"
+    template_name = "docs.html"
 
 
 def handler404(request, exception):
-    return render(request, "e_voting/404.html")
+    return render(request, "404.html")
 
 
 def handler500(request, *args, **argv):
-    return render(request, "e_voting/500.html")
+    return render(request, "500.html")

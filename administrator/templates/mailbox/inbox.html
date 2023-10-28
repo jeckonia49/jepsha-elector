@@ -1,0 +1,91 @@
+{% extends 'root.html' %}
+<!---->
+{% block css %} {% include "mailbox/mailbox_css.html" %} {% endblock css %}
+<!---->
+{% block title %} {{ block.super }} Mail Inbox {% endblock title %}
+<!---->
+{% load static %}
+
+<!---->
+{% block content %}
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <h3 class="box-title">Messages</h3>
+      <div class="box-tools ">
+
+       {% if mailbox %}
+        <form action="{% url 'readMessages' %}" method='post'>
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="btn btn-tool"
+              data-card-widget="remove"
+              title="Remove"
+            >
+              <i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </form>
+       {% endif %}
+      </div>
+    </div>
+    <div class="box-body">
+      <div class="row px-4">
+        <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
+          {% for mail in mailbox %}
+          <div class="post">
+            <div class="user-block">
+              <img
+                class="img-circle img-bordered-sm"
+                src="{% static 'images/jomo.png' %}"
+                alt="user image"
+              />
+              <span class="username">
+                <a href="#">{{mail.plaintif}}</a>
+              </span>
+              <span class="description"
+                >Shared publicly - {{mail.timestamp|date:"d F, Y"}}</span
+              >
+            </div>
+
+            <p style="padding-left:50px;">{{mail.complaint|safe}}</p>
+            <p style="padding-left:50px;">
+              <a href="#replyMessage" data-id={{mail.plaintif}}  data-toggle="modal" class="link-black text-sm"
+                ><i class="glyphicon glyphicon-share-alt"></i>Reply</a
+              >
+            </p>
+          </div>
+         
+
+          <div class="modal fade" id="replyMessage">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><b>Reply To {{mail.plaintif}}</b></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" method="POST" action="" enctype="">
+                {% csrf_token %}
+                <input type="hidden" name="mail_id" value="{{mail.pk}}" />
+                {{form.reply}}
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+                <button type="submit" class="btn btn-success btn-flat" name="save"><i class="fa fa-check-square-o"></i> Save</button>
+                </form>
+            </div>
+            </div>
+            </div>
+            </div> 
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+

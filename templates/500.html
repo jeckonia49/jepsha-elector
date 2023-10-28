@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+<!---->
+{% load static %} {% block title %}{{ block.super }} 404 {% endblock title %}
+<!---->
+{% block content %}
+<div class="row">
+  <div class="large-5 columns large-centered">
+    <a href=""><img border="0" src="{% static 'logo.png' %}" /></a>
+  </div>
+</div>
+<div class="row">&nbsp;</div>
+
+<div class="large-9 columns">
+  <p>Opps! Server Error.</p>
+
+  <p>Kindly contact the server administrator if the problem persist</p>
+</div>
+<div class="large-3 columns" id="mystuff">
+  <div class="row">&nbsp;</div>
+  <div class="panel row">
+    <button>
+      <a href="{% url 'home' %}" style="color: white">Back Home</a>
+    </button>
+  </div>
+</div>
+{% endblock content %}
+<!---->
+<!---->

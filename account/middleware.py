@@ -33,6 +33,8 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                 or request.path == reverse("account_register")
                 or modulename == "django.contrib.auth.views"
                 or request.path == reverse("home")
+                or request.path == reverse("passwordreset")
+                or request.path == reverse("passwordresetview")
                 # or request.path == reverse("account_login")
             ):
                 pass
@@ -41,8 +43,8 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                 messages.error(
                     request, "You need to be logged in to perform this operation"
                 )
-                return redirect(reverse("home"))
-                # return redirect(reverse("account_login"))
+                # return redirect(reverse("home"))
+                return redirect(reverse("account_login"))
             else:
                 return redirect(reverse("home"))
                 # return redirect(reverse("account_login"))

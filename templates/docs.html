@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+<!---->
+{% load static %}
+<!---->
+{% block title %} {{ block.super }} Documentation {% endblock title %}
+<!---->
+{% block content %}
+<div class="large-12-columns">
+  <div class="row"><h2>Documentation</h2></div>
+
+  <div class="row">
+    <p>
+      The JepshaElector Voting technology is based on advanced peer-reviewed
+      cryptographic techniques that enable your vote to remain secret while
+      providing an intelligent ballot tracker to let you verify that your ballot
+      was received and counted properly:
+    </p>
+
+    <ul>
+      <li>
+        <a href="">technical documentation</a>
+      </li>
+      <li>
+        <a href="">original peer-reviewed (Usenix Security 2022)</a>
+      </li>
+      <li>
+        <a href="">Pyrios</a>, a Go library by <a href="">Tom Roeder</a> that
+        verifies JepshaElector elections.
+      </li>
+      <li>
+        <a href="">JepshaElector Election Monitor</a>, produced by
+        <strong>Daniel Milimo</strong>, BPHARM JKUAT
+      </li>
+    </ul>
+
+    <p>JepshaElector has been covered in the press:</p>
+
+    <ul>
+      <li>
+        <a href="https:newzfox.com" target="_blank"
+          >Newzfox Magazine, May 2023</a
+        >
+      </li>
+      <li>
+        <a href="https:newzfox.com" target="_blank"
+          >Lionnic Magazine, October 2023</a
+        >
+      </li>
+      <li>
+        <a href="">Ynet, Kenya Press, September 2023</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock content %}
+<!---->

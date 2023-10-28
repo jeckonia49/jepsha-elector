@@ -4,6 +4,8 @@ from django.contrib import messages
 from .forms import CustomUserForm
 from voting.forms import VoterForm
 from django.contrib.auth import login, logout
+from django.views.generic import TemplateView, View
+from .models import CustomUser
 
 # Create your views here.
 
@@ -63,3 +65,39 @@ def account_logout(request):
         messages.error(request, "You need to be logged in to perform this action")
 
     return redirect(reverse("account_login"))
+
+
+def reset_password_view(request):
+    pass
+
+
+class ResetPasswordView(TemplateView):
+    template_name = "voting/resetpassword.html"
+    custom_user = CustomUser
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse("home"))
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user_email = request.POST.get("email")
+        user_password = request.POST.get("password")
+        user = self.custom_user.objects.filter(email=user_email).first()
+        if user:
+            if len(user_password) > 8:
+                user.set_password(user_password)
+                user.save()
+                messages.success(request, f"Your new password is {user_password}")
+                return redirect(reverse("passwordresetview"))
+            messages.error(request, "Password Can't be less than 8 characters")
+            return redirect(reverse("passwordreset"))
+        messages.error(
+            request,
+            f"We could not find your email in our database. Kinldy recheck and try again!",
+        )
+        return redirect(reverse("passwordreset"))
+
+
+class ResetPasswordViewDone(TemplateView):
+    template_name = "voting/resetpasswordone.html"

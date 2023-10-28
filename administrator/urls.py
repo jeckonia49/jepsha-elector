@@ -35,4 +35,7 @@ urlpatterns = [
     path("votes/view", views.VotesListView.as_view(), name="viewVotes"),
     path("votes/reset/", views.ResetVotesView.as_view(), name="resetVote"),
     path("votes/results/", views.PrintView.as_view(), name="printResult"),
+    # # * Messages
+    path("mailbox/", views.ElectionMilboxView.as_view(), name="viewMessages"),
+    path("mailbox/read/complete/", views.MarkMailboxReadView.as_view(), name="readMessages"),
 ]

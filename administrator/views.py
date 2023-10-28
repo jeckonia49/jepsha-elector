@@ -12,6 +12,8 @@ import json  # Not used
 from django.views.generic import View, TemplateView
 from urllib.parse import urlparse
 from django.urls import resolve
+from voting.models import ElectionMilbox
+from .forms import ElectionMailBoxForm, ElectionMailBoxReplyForm
 
 # from django_renderpdf.views import PDFView
 
@@ -403,3 +405,48 @@ class ResetVotesView(TemplateView):
         Voter.objects.all().update(voted=False)
         messages.success(request, "All votes has been reset")
         return redirect(reverse("viewVotes"))
+
+
+class ElectionMilboxView(TemplateView):
+    template_name = "mailbox/inbox.html"
+    queryset = ElectionMilbox
+    form_class = ElectionMailBoxReplyForm
+
+    def get_queryset(self):
+        return self.queryset.objects.filter(read=False).all()
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = "Inbox"
+        context["mailbox"] = self.get_queryset()
+        context["form"] = self.form_class()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            mail_id = request.POST.get("mail_id")
+            mail = self.queryset.objects.get(pk=int(mail_id))
+            instance = form.save(commit=False)
+            instance.electionmailbox = mail
+            mail.read = True
+            mail.save()
+            instance.save()
+            form.save()
+            messages.success(
+                request,
+                f"You're response was sent succesfully to {instance.electionmailbox.plaintif}",
+            )
+            print(form.cleaned_data, mail_id)
+        return redirect(reverse("viewMessages"))
+
+class MarkMailboxReadView(View):
+    queryset = ElectionMilbox
+    def get_queryset(self):
+        return self.queryset.objects.filter(read=False).all()
+    
+    def post(self, request, *args, **kwargs):
+        self.get_queryset().delete()
+        messages.success(request, "All Messages Marked as Read")
+        return redirect(reverse("viewMessages"))
+    

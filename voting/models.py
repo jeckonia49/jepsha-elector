@@ -40,3 +40,25 @@ class Votes(models.Model):
     voter = models.ForeignKey(Voter, on_delete=models.CASCADE)
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+
+
+class ElectionMilbox(models.Model):
+    plaintif = models.ForeignKey(
+        Voter, on_delete=models.CASCADE, related_name="voter_complaint"
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    complaint = models.TextField(max_length=1000)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.plaintif.admin.email}"
+
+
+class ElectionMilboxReply(models.Model):
+    electionmailbox = models.ForeignKey(
+        ElectionMilbox, on_delete=models.CASCADE, related_name="voter_complaint_reply"
+    )
+    reply = models.TextField(max_length=1000, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.electionmailbox.pk}"
