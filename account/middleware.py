@@ -35,7 +35,9 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                 or request.path == reverse("home")
                 or request.path == reverse("passwordreset")
                 or request.path == reverse("passwordresetview")
-                # or request.path == reverse("account_login")
+                or request.path == reverse("about-us")
+                or request.path == reverse("faqs")
+                or request.path == reverse("privacy")
             ):
                 pass
             elif modulename == "administrator.views" or modulename == "voting.views":

@@ -22,7 +22,7 @@
     <ul>
       <li><a href="{% url 'home' %}">JepshaElector</a></li>
 
-      {% if request.user.is_authenticated %}
+      {% comment %} {% if request.user.is_authenticated %} {% endcomment %}
       <li class="divider"></li>
       <li class="{% if request.resolver_match.view_name == "about-us" %}active{% endif %}"><a href="{% url 'about-us' %}">About</a></li>
       <li class="divider"></li>
@@ -35,8 +35,8 @@
       <li class="{% if request.resolver_match.view_name == 'privacy' %}active{% endif %}"><a href="{% url 'privacy' %}">Privacy</a></li>
 
       <li class="divider"></li>
-      <li><a href="mailto:help@jepshaelector.jkuat.ac.ke">Help!</a></li>
-      {% endif %}
+      <li><a href="mailto:jeckonia23@gmail.com">Help!</a></li>
+      {% comment %} {% endif %} {% endcomment %}
     </ul>
   </section>
 </nav>
