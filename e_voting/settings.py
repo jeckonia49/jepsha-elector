@@ -33,18 +33,15 @@ INSTALLED_APPS = [
     "account.apps.AccountConfig",
     "voting.apps.VotingConfig",
     "administrator.apps.AdministratorConfig",
-
-    'cloudinary_storage',
-    'cloudinary',
-
+    "cloudinary_storage",
+    "cloudinary",
 ]
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get("CLOUD_NAME"),
-    'API_KEY': os.environ.get("API_KEY"),
-    'API_SECRET': os.environ.get("API_SECRET")
+    "CLOUD_NAME": os.environ.get("CLOUD_NAME"),
+    "API_KEY": os.environ.get("API_KEY"),
+    "API_SECRET": os.environ.get("API_SECRET"),
 }
-
 
 
 MIDDLEWARE = [
@@ -135,7 +132,7 @@ MEDIA_URL = "/media/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 AUTH_USER_MODEL = "account.CustomUser"
@@ -144,3 +141,7 @@ AUTHENTICATION_BACKENDS = ["account.email_backend.EmailBackend"]
 ELECTION_TITLE_PATH = os.path.join(
     BASE_DIR, "election_title.txt"
 )  # Election Title File
+
+# settings.py
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
