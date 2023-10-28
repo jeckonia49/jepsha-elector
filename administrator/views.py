@@ -400,6 +400,6 @@ class VotesListView(TemplateView):
 class ResetVotesView(TemplateView):
     def get(self, request, *args, **kwargs):
         Votes.objects.all().delete()
-        Voter.objects.all().update(voted=False, verified=False, otp=None)
+        Voter.objects.all().update(voted=False)
         messages.success(request, "All votes has been reset")
         return redirect(reverse("viewVotes"))
