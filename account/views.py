@@ -60,7 +60,7 @@ def account_logout(request):
     user = request.user
     if user.is_authenticated:
         logout(request)
-        messages.success(request, "Thank you for visiting us!")
+        messages.success(request, "Thank you for visiting our website!")
     else:
         messages.error(request, "You need to be logged in to perform this action")
 

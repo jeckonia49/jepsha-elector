@@ -36,6 +36,10 @@
 
       <li class="divider"></li>
       <li><a href="mailto:jeckonia23@gmail.com">Help!</a></li>
+      {% if request.user.is_authenticated %}
+      <li class="divider"></li>
+      <li><a href="{% url 'account_logout' %}">Logout</a></li>
+      {% endif %}
       {% comment %} {% endif %} {% endcomment %}
     </ul>
   </section>
