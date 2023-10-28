@@ -36,6 +36,11 @@
 
       <li class="divider"></li>
       <li><a href="mailto:jeckonia23@gmail.com">Help!</a></li>
+      {% if request.resolver_match.view_name != 'home' and request.user.is_anonymous %}
+      <li class="divider"></li>
+      <li><a href="{% url 'account_login' %}">Login</a></li>
+      {% endif %}
+      <!---->
       {% if request.user.is_authenticated %}
       <li class="divider"></li>
       <li><a href="{% url 'account_logout' %}">Logout</a></li>

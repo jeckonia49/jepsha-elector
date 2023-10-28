@@ -37,6 +37,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                 or request.path == reverse("passwordresetview")
                 or request.path == reverse("about-us")
                 or request.path == reverse("faqs")
+                or request.path == reverse("docs")
                 or request.path == reverse("privacy")
             ):
                 pass
