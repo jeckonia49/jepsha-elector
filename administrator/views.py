@@ -1,19 +1,18 @@
-from typing import Any
-from django import http
 from django.shortcuts import render, reverse, redirect
 from voting.models import Voter, Position, Candidate, Votes
-from account.models import CustomUser
 from account.forms import CustomUserForm
 from voting.forms import *
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
-import json  # Not used
 from django.views.generic import View, TemplateView
-from urllib.parse import urlparse
-from django.urls import resolve
 from voting.models import ElectionMilbox
 from .forms import ElectionMailBoxForm, ElectionMailBoxReplyForm
+from .mixins import DeleteMixin, BallotResultsMixin
+from django.utils import timezone
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from voting.models import ElectionResultPdf
 
 # from django_renderpdf.views import PDFView
 
@@ -37,69 +36,48 @@ def find_n_winners(data, n):
     return ", &nbsp;".join(final_list)
 
 
-class PrintView(TemplateView):
+class PrintView(BallotResultsMixin, TemplateView):
     template_name = "admin/print.html"
     prompt_download = True
+    find_winers = find_n_winners
 
     @property
     def download_name(self):
         return "result.pdf"
 
-    def get_context_data(self, *args, **kwargs):
-        title = "E-voting"
-        try:
-            file = open(settings.ELECTION_TITLE_PATH, "r")
-            title = file.read()
-        except:
+
+class DownloadElectionResults(BallotResultsMixin, View):
+    template_name = "admin/results.html"
+
+    def get(self, request, *args, **kwargs):
+        # Create a Django response object, and specify content_type as pdf
+        response = HttpResponse(content_type="application/pdf")
+        filename = f"{request.user.username}_election_report.pdf"
+        response["Content-Disposition"] = f"filename={filename}"
+        # find the template and render it.
+        template = get_template(self.template_name)
+        html = template.render(self.get_context_data(*args, **kwargs))
+        # create a pdf
+        pisa_status = pisa.CreatePDF(html, dest=response)
+
+        # if error then show some funny view
+        if pisa_status.err:
+            print(pisa_status)
+            return HttpResponse("We had some errors <pre>" + html + "</pre>")
+        return response
+
+    def save_pdf_2db(self, request, report, *args, **kwargs):
+        file = ElectionResultPdf.objects.filter(user=request.user, report=report)
+        if file.exists():
             pass
-        context = super().get_context_data(*args, **kwargs)
-        position_data = {}
-        for position in Position.objects.all():
-            candidate_data = []
-            winner = ""
-            for candidate in Candidate.objects.filter(position=position):
-                this_candidate_data = {}
-                votes = Votes.objects.filter(candidate=candidate).count()
-                this_candidate_data["name"] = candidate.fullname
-                this_candidate_data["votes"] = votes
-                this_candidate_data["contestant"] = candidate
-                candidate_data.append(this_candidate_data)
-            print(
-                "Candidate Data For  ", str(position.name), " = ", str(candidate_data)
-            )
-            # ! Check Winner
-            if len(candidate_data) < 1:
-                winner = "Position does not have candidates"
-            else:
-                # Check if max_vote is more than 1
-                if position.max_vote > 1:
-                    winner = find_n_winners(candidate_data, position.max_vote)
-                else:
-                    winner = max(candidate_data, key=lambda x: x["votes"])
-                    if winner["votes"] == 0:
-                        winner = "No one voted for this yet position, yet."
-                    else:
-                        """
-                        https://stackoverflow.com/questions/18940540/how-can-i-count-the-occurrences-of-an-item-in-a-list-of-dictionaries
-                        """
-                        count = sum(
-                            1
-                            for d in candidate_data
-                            if d.get("votes") == winner["votes"]
-                        )
-                        if count > 1:
-                            winner = f"There are {count} candidates with {winner['votes']} votes"
-                        else:
-                            winner = "Winner : " + winner["name"]
-            print(
-                "Candidate Data For  ", str(position.name), " = ", str(candidate_data)
-            )
-            position_data[position.name] = {
-                "candidate_data": candidate_data,
-                "winner": winner,
-                "max_vote": position.max_vote,
-            }
-        context["positions"] = position_data
+        else:
+            file = ElectionResultPdf.objects.create(user=request.user, report=report)
+            file.save()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DownloadElectionResults, self).get_context_data(*args, **kwargs)
+        context["today"] = timezone.now().date()
+        context["administrator"] = self.request.user
         return context
 
 
@@ -209,17 +187,10 @@ def updateVoter(request):
     return redirect(reverse("adminViewVoters"))
 
 
-def deleteVoter(request):
-    if request.method != "POST":
-        messages.error(request, "Access Denied")
-    try:
-        admin = Voter.objects.get(id=request.POST.get("id")).admin
-        admin.delete()
-        messages.success(request, "Voter Has Been Deleted")
-    except:
-        messages.error(request, "Access To This Resource Denied")
-
-    return redirect(reverse("adminViewVoters"))
+class DeleteVoter(DeleteMixin):
+    queryset = Voter
+    success_url = "adminViewVoters"
+    success_message = "Voter Successfully Deleted"
 
 
 def viewPositions(request):
@@ -251,17 +222,20 @@ def updatePosition(request):
     return redirect(reverse("viewPositions"))
 
 
-def deletePosition(request):
-    if request.method != "POST":
-        messages.error(request, "Access Denied")
-    try:
-        pos = Position.objects.get(id=request.POST.get("id"))
-        pos.delete()
-        messages.success(request, "Position Has Been Deleted")
-    except:
-        messages.error(request, "Access To This Resource Denied")
+class DeletePosition(DeleteMixin):
+    queryset = Position
+    success_url = "viewPositions"
+    success_message = "Position Deleted Successfully"
 
-    return redirect(reverse("viewPositions"))
+    def post(self, request, *args, **kwargs):
+        try:
+            position = self.queryset.objects.get(id=request.POST.get("id"))
+            position.delete()
+            messages.success(request, self.success_message)
+            return redirect(reverse(self.success_url))
+        except:
+            messages.error(request, self.error_message)
+            return redirect(reverse(self.success_url))
 
 
 def viewCandidates(request):
@@ -297,17 +271,20 @@ def updateCandidate(request):
     return redirect(reverse("viewCandidates"))
 
 
-def deleteCandidate(request):
-    if request.method != "POST":
-        messages.error(request, "Access Denied")
-    try:
-        pos = Candidate.objects.get(id=request.POST.get("id"))
-        pos.delete()
-        messages.success(request, "Candidate Has Been Deleted")
-    except:
-        messages.error(request, "Access To This Resource Denied")
+class DeleteCandidate(DeleteMixin):
+    queryset = Candidate
+    success_url = "viewCandidates"
+    success_message = "Candidate Deleted Successfully"
 
-    return redirect(reverse("viewCandidates"))
+    def post(self, request, *args, **kwargs):
+        try:
+            candidate = self.queryset.objects.get(id=request.POST.get("id"))
+            candidate.delete()
+            messages.success(request, self.success_message)
+            return redirect(reverse(self.success_url))
+        except:
+            messages.error(request, self.error_message)
+            return redirect(reverse(self.success_url))
 
 
 def view_candidate_by_id(request):
@@ -399,6 +376,37 @@ class VotesListView(TemplateView):
         return context
 
 
+def view_vote_by_id(request):
+    vote_id = request.GET.get("id")
+    vote = Votes.objects.filter(id=vote_id)
+    context = {}
+    if not vote.exists():
+        context["code"] = 404
+    else:
+        vote = vote[0]
+        context[
+            "fullname"
+        ] = f"{vote.voter.admin.last_name} {vote.voter.admin.first_name}"
+    return JsonResponse(context)
+
+
+class DeleteVote(DeleteMixin):
+    queryset = Votes
+    success_url = "viewVotes"
+    success_message = "Vote Deleted Successfully"
+
+    def post(self, request, *args, **kwargs):
+        try:
+            vote = self.queryset.objects.get(id=request.POST.get("id"))
+            print(vote)
+            vote.delete()
+            messages.success(request, self.success_message)
+            return redirect(reverse(self.success_url))
+        except:
+            messages.error(request, self.error_message)
+            return redirect(reverse(self.success_url))
+
+
 class ResetVotesView(TemplateView):
     def get(self, request, *args, **kwargs):
         Votes.objects.all().delete()
@@ -415,7 +423,7 @@ class ElectionMilboxView(TemplateView):
     def get_queryset(self):
         return self.queryset.objects.filter(read=False).all()
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = "Inbox"
         context["mailbox"] = self.get_queryset()
@@ -440,13 +448,14 @@ class ElectionMilboxView(TemplateView):
             print(form.cleaned_data, mail_id)
         return redirect(reverse("viewMessages"))
 
+
 class MarkMailboxReadView(View):
     queryset = ElectionMilbox
+
     def get_queryset(self):
         return self.queryset.objects.filter(read=False).all()
-    
+
     def post(self, request, *args, **kwargs):
         self.get_queryset().delete()
         messages.success(request, "All Messages Marked as Read")
         return redirect(reverse("viewMessages"))
-    

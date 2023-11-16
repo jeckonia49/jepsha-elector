@@ -25,7 +25,7 @@
       <form
         method="POST"
         style="width: 100%; padding-top: 4rem !important"
-        action=""
+        action="{% url 'proposal' %}"
       >
         {% csrf_token %}
         <div class="row">
@@ -33,24 +33,21 @@
             <div class="box box-solid" id="">
               <div class="box-header with-border">
                 <h3 class="box-title">
-                  <b>Report any mischievious activity or complaint to us</b>
+                  <b>How woul you want us to improve our system?</b>
                 </h3>
               </div>
               <div class="box-body">
-                As we strie to automate election process, we also understand
-                there are some 'people' who will try to take advantage of
-                loopholes (incase of any). For any complaint do not hesistate to
-                alert us. Your identify is anonymous to us but will take keen
-                consideration in the compalaint and address it as soon as we
-                can.
+                Your suggestion is higly appreciated to help us make this a
+                better system both for electee and the contestant and increase
+                on integrity of the votes
                 <hr />
-                <div class="form-group has-feedback">{{form.complaint}}</div>
+                <div class="form-group has-feedback">{{form.content}}</div>
                 <button
                   type="submit"
                   class="btn btn-primary btn-flat"
                   name="verify"
                 >
-                  <i class="glyphicon glyphicon-ok"></i> Submit Complaint
+                  <i class="glyphicon glyphicon-ok"></i> Submit Proposal
                 </button>
               </div>
             </div>

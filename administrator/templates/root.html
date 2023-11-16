@@ -50,8 +50,14 @@
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">{{ page_title }}</li>
+        {% if request.resolver_match.view_name == 'printResult' %}
+         <button>
+        <a href="{% url 'result' %}" class="py-2 px-3" target="_blank"> Download Results </a>
+      </button>
+        {% endif %}
       </ol>
-    </section>
+
+  </section>
     <!---->
 
   {% block content %}

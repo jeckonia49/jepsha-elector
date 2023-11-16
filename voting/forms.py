@@ -26,3 +26,14 @@ class CandidateForm(FormSettings):
             "position",
             "photo",
         ]
+
+
+class SuggestionForm(FormSettings):
+    class Meta:
+        model = Suggestion
+        fields = ["content"]
+        widget = {
+            "content": forms.Textarea(
+                attrs={"placeholder": "write your proposal here ..."}
+            )
+        }

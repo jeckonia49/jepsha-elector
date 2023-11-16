@@ -43,5 +43,9 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
 
+    @property
+    def username(self):
+        return self.email[:self.email.index("@")]
+
     def __str__(self):
         return self.last_name + " " + self.first_name

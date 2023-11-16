@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Voter, ElectionMilbox, ElectionMilboxReply
+from .models import (
+    Voter,
+    ElectionMilbox,
+    ElectionMilboxReply,
+    Suggestion,
+    ElectionResultPdf,
+)
 
 
 @admin.register(Voter)
@@ -43,3 +49,14 @@ class ElectionMilboxAdmin(admin.ModelAdmin):
         queryset.update(read=False)
 
     _make_unread.short_description = "Mark selected items as unread"
+
+
+@admin.register(Suggestion)
+class SuggestionAdmin(admin.ModelAdmin):
+    list_display = ["voter", "implemented", "timestamp"]
+    list_filter = ["implemented"]
+
+
+@admin.register(ElectionResultPdf)
+class ElectionResultPdfAdmin(admin.ModelAdmin):
+    list_display = ["report", "user"]

@@ -42,6 +42,20 @@ class Votes(models.Model):
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
 
 
+class ElectionResultPdf(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="results_owner",
+    )
+    report = models.FileField(upload_to="results/")
+
+    def __str__(self):
+        return f"{self.report.name}".split(".")[0]
+
+
 class ElectionMilbox(models.Model):
     plaintif = models.ForeignKey(
         Voter, on_delete=models.CASCADE, related_name="voter_complaint"
@@ -62,3 +76,15 @@ class ElectionMilboxReply(models.Model):
 
     def __str__(self):
         return f"{self.electionmailbox.pk}"
+
+
+class Suggestion(models.Model):
+    voter = models.ForeignKey(
+        Voter, on_delete=models.CASCADE, related_name="suggestion_voter"
+    )
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    implemented = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Proposal ID: {self.pk}"
