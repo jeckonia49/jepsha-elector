@@ -17,7 +17,7 @@
           <th>Full Name</th>
           <th>Position</th>
           <th>Admission No</th>
-          <th>Avatar</th>
+          <th>Academic Year</th>
           <th>Action</th>
       </thead>
       <tbody>
@@ -27,8 +27,7 @@
       <td>{{ candidate.fullname }}</td>
       <td>{{ candidate.position }}</td>
       <td>{{ candidate.admission_number }}</td>
-      <td><img src="{{ candidate.photo.url }}" width="80" height="80" alt="{{ candidate.fullname }}'s Avatar" class="img img-fluid"></td>
-      
+      <td>{{candidate.year_of_study}}</td>      
       <td>
         <button class='btn btn-success btn-sm edit btn-flat' data-id='{{ candidate.id }}'><i class='fa fa-edit'></i> Edit</button>
         <button class='btn btn-danger btn-sm delete btn-flat' data-id='{{ candidate.id }}'><i class='fa fa-trash'></i> Delete</button>

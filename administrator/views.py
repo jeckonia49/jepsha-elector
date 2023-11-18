@@ -23,7 +23,6 @@ def find_n_winners(data, n):
     """
     final_list = []
     candidate_data = data[:]
-    # print("Candidate = ", str(candidate_data))
     for i in range(0, n):
         max1 = 0
         if len(candidate_data) == 0:
@@ -62,7 +61,6 @@ class DownloadElectionResults(BallotResultsMixin, View):
 
         # if error then show some funny view
         if pisa_status.err:
-            print(pisa_status)
             return HttpResponse("We had some errors <pre>" + html + "</pre>")
         return response
 
@@ -398,7 +396,6 @@ class DeleteVote(DeleteMixin):
     def post(self, request, *args, **kwargs):
         try:
             vote = self.queryset.objects.get(id=request.POST.get("id"))
-            print(vote)
             vote.delete()
             messages.success(request, self.success_message)
             return redirect(reverse(self.success_url))
@@ -445,7 +442,6 @@ class ElectionMilboxView(TemplateView):
                 request,
                 f"You're response was sent succesfully to {instance.electionmailbox.plaintif}",
             )
-            print(form.cleaned_data, mail_id)
         return redirect(reverse("viewMessages"))
 
 

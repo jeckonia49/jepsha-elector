@@ -59,7 +59,6 @@ def generate_ballot(display_controls=False):
                     + position_name
                     + '">'
                 )
-            image = "/media/" + str(candidate.photo)
             candidates_data = (
                 candidates_data
                 + "<li>"
@@ -68,11 +67,10 @@ def generate_ballot(display_controls=False):
                 + candidate.fullname
                 + '" data-bio="'
                 + candidate.bio
-                + '"><i class="fa fa-search"></i> Platform</button><img src="'
-                + image
-                + '" height="100px" width="100px" class="clist"><span class="cname clist">'
+                + '"><i class="fa fa-search"></i> Manifesto</button><span class="cname clist">'
                 + candidate.fullname
-                + "</span></li>"
+              +'<span class="cname clist">' 
+              +str(candidate.admission_number)
             )
         up = ""
         if position.priority == 1:

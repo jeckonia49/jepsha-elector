@@ -50,9 +50,7 @@ class BallotResultsMixin:
                 this_candidate_data["votes"] = votes
                 this_candidate_data["contestant"] = candidate
                 candidate_data.append(this_candidate_data)
-            print(
-                "Candidate Data For  ", str(position.name), " = ", str(candidate_data)
-            )
+
             # ! Check Winner
             if len(candidate_data) < 1:
                 winner = "Position does not have candidates"
@@ -77,9 +75,7 @@ class BallotResultsMixin:
                             winner = f"There are {count} candidates with {winner['votes']} votes"
                         else:
                             winner = "Winner : " + winner["name"]
-            print(
-                "Candidate Data For  ", str(position.name), " = ", str(candidate_data)
-            )
+
             position_data[position.name] = {
                 "candidate_data": candidate_data,
                 "winner": winner,

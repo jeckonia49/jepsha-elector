@@ -28,7 +28,6 @@ class Candidate(models.Model):
     fullname = models.CharField(max_length=50)
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     bio = models.TextField()
-    photo = models.ImageField(upload_to="candidates")
     admission_number = models.CharField(max_length=100, unique=True)
     year_of_study = models.PositiveIntegerField(default=1)
 

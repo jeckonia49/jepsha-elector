@@ -64,12 +64,10 @@
       url: '{% url "fetch_ballot" %}',
       dataType: "json",
       success: function (response) {
-        $("#content")
-          .html(response)
-          .iCheck({
-            checkboxClass: "icheckbox_flat-green",
-            radioClass: "iradio_flat-green",
-          });
+        $("#content").html(response).iCheck({
+          checkboxClass: "icheckbox_flat-green",
+          radioClass: "iradio_flat-green",
+        });
       },
     });
   }

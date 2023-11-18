@@ -24,7 +24,6 @@ class CandidateForm(FormSettings):
             "year_of_study",
             "bio",
             "position",
-            "photo",
         ]
 
 
