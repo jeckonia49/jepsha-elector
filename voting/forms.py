@@ -4,6 +4,15 @@ from account.forms import FormSettings
 
 
 class VoterForm(FormSettings):
+    class Meta:
+        model = Voter
+        fields = [
+            "admission_number",
+            "year_of_study",
+        ]
+
+
+class UpdateVoterForm(FormSettings):
     first_name = forms.CharField(max_length=100, widget=forms.TextInput())
     last_name = forms.CharField(max_length=100, widget=forms.TextInput())
     email = forms.EmailField(widget=forms.EmailInput())

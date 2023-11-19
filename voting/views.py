@@ -11,7 +11,7 @@ import json
 from django.contrib.auth import get_user
 from administrator.forms import ElectionMailBoxForm
 from django.views.generic import TemplateView, View
-from .forms import SuggestionForm, VoterForm
+from .forms import SuggestionForm, VoterForm, UpdateVoterForm
 
 # Create your views here.
 
@@ -393,7 +393,7 @@ def submit_ballot(request):
 
 class UpdateVoterView(TemplateView):
     template_name = "voting/voter/updateVoter.html"
-    form_class = VoterForm
+    form_class = UpdateVoterForm
     queryset = Voter
 
     def get_voter(self):
