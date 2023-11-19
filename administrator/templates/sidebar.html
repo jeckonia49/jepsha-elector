@@ -10,13 +10,6 @@
           class="img-circle"
           alt="User Image"
         />
-        {% comment %}
-        <img
-          src="{% static 'images/people.png' %}"
-          class="img-circle"
-          alt="User Image"
-        />
-        {% endcomment %}
       </div>
       <div class="pull-left info">
         <p>{{ request.user }}</p>
@@ -87,8 +80,6 @@
           ><i class="fa fa-file-text"></i> <span>Report</span></a
         >
       </li>
-
-      {% endif %}
       <li class="header">Actions</li>
       <li class="">
         <a href="{% url 'proposal' %}"
@@ -101,6 +92,7 @@
           ><i class="fa fa-cog"></i> <span>Update </span></a
         >
       </li>
+      {% endif %}
 
       <li class="header">Exit</li>
 
