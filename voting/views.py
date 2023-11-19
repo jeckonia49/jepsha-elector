@@ -1,17 +1,17 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from account.views import account_login
 from .models import Position, Candidate, Voter, Votes
 from django.http import JsonResponse
 from django.utils.text import slugify
 from django.contrib import messages
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 import requests
 import json
 from django.contrib.auth import get_user
 from administrator.forms import ElectionMailBoxForm
 from django.views.generic import TemplateView, View
-from .forms import SuggestionForm
+from .forms import SuggestionForm, VoterForm
 
 # Create your views here.
 
@@ -69,8 +69,8 @@ def generate_ballot(display_controls=False):
                 + candidate.bio
                 + '"><i class="fa fa-search"></i> Manifesto</button><span class="cname clist">'
                 + candidate.fullname
-              +'<span class="cname clist">' 
-              +str(candidate.admission_number)
+                + '<span class="cname clist">'
+                + str(candidate.admission_number)
             )
         up = ""
         if position.priority == 1:
@@ -184,12 +184,12 @@ class ElectionMailBoxView(TemplateView):
             messages.success(
                 request, f"Your message was successfully submitted. Thanks!"
             )
-            return redirect(reverse("voterDashboard"))
+            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
         messages.success(
             request,
             f"An error occurred will submitting your message. Please try again.",
         )
-        return redirect(reverse("voterDashboard"))
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
 class ProposalSuggestionView(TemplateView):
@@ -209,120 +209,9 @@ class ProposalSuggestionView(TemplateView):
             instance.save()
             form.save()
             messages.success(request, "Your proposal was sent successfully.")
-            return redirect("voterDashboard")
+            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
         messages.error(request, "Error sending your message. Tyr again.")
-        return redirect("voterDashboard")
-
-
-# def verify(request):
-#     context = {
-#         'page_title': 'Complaint/Reporting'
-#     }
-#     return render(request, "voting/voter/report.html", context)
-
-
-# def resend_otp(request):
-#     """API For SMS
-#     I used https://www.multitexter.com/ API to send SMS
-#     You might not want to use this or this service might not be available in your Country
-#     For quick and easy access, Toggle the SEND_OTP from True to False in settings.py
-#     """
-#     user = request.user
-#     voter = user.voter
-#     error = False
-#     if settings.SEND_OTP:
-#         if voter.otp_sent >= 3:
-#             error = True
-#             response = "You have requested OTP three times. You cannot do this again! Please enter previously sent OTP"
-#         else:
-#             phone = voter.phone
-#             # Now, check if an OTP has been generated previously for this voter
-#             otp = voter.otp
-#             if otp is None:
-#                 # Generate new OTP
-#                 otp = generate_otp()
-#                 voter.otp = otp
-#                 voter.save()
-#             try:
-#                 msg = "Dear " + str(user) + ", kindly use " + \
-#                     str(otp) + " as your OTP"
-#                 message_is_sent = send_sms(phone, msg)
-#                 if message_is_sent:  # * OTP was sent successfully
-#                     # Update how many OTP has been sent to this voter
-#                     # Limited to Three so voters don't exhaust OTP balance
-#                     voter.otp_sent = voter.otp_sent + 1
-#                     voter.save()
-
-#                     response = "OTP has been sent to your phone number. Please provide it in the box provided below"
-#                 else:
-#                     error = True
-#                     response = "OTP not sent. Please try again"
-#             except Exception as e:
-#                 response = "OTP could not be sent." + str(e)
-
-#                 # * Send OTP
-#     else:
-#         #! Update all Voters record and set OTP to 0000
-#         #! Bypass OTP verification by updating verified to 1
-#         #! Redirect voters to ballot page
-#         response = bypass_otp()
-#     return JsonResponse({"data": response, "error": error})
-
-
-# def bypass_otp():
-#     Voter.objects.all().filter(otp=None, verified=False).update(otp="0000", verified=True)
-#     response = "Kindly cast your vote"
-#     return response
-
-
-# def send_sms(phone_number, msg):
-#     """Read More
-#     https://www.multitexter.com/developers
-#     """
-#     import requests
-#     import os
-#     import json
-#     response = ""
-#     email = os.environ.get('SMS_EMAIL')
-#     password = os.environ.get('SMS_PASSWORD')
-#     if email is None or password is None:
-#         raise Exception("Email/Password cannot be Null")
-#     url = "https://app.multitexter.com/v2/app/sms"
-#     data = {"email": email, "password": password, "message": msg,
-#             "sender_name": "OTP", "recipients": phone_number, "forcednd": 1}
-#     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-#     r = requests.post(url, data=json.dumps(data), headers=headers)
-#     response = r.json()
-#     status = response.get('status', 0)
-#     if str(status) == '1':
-#         return True
-#     else:
-#         return False
-
-
-# def verify_otp(request):
-#     error = True
-#     if request.method != 'POST':
-#         messages.error(request, "Access Denied")
-#     else:
-#         otp = request.POST.get('otp')
-#         if otp is None:
-#             messages.error(request, "Please provide valid OTP")
-#         else:
-#             # Get User OTP
-#             voter = request.user.voter
-#             db_otp = voter.otp
-#             if db_otp != otp:
-#                 messages.error(request, "Provided OTP is not valid")
-#             else:
-#                 messages.success(
-#                     request, "You are now verified. Please cast your vote")
-#                 voter.verified = True
-#                 voter.save()
-#                 error = False
-#     if error:
-#         return redirect(reverse('voterVerify'))
-#     return redirect(reverse('show_ballot'))
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
 def show_ballot(request):
@@ -500,3 +389,53 @@ def submit_ballot(request):
         voter.save()
         messages.success(request, "Thanks for voting")
         return redirect(reverse("voterDashboard"))
+
+
+class UpdateVoterView(TemplateView):
+    template_name = "voting/voter/updateVoter.html"
+    form_class = VoterForm
+    queryset = Voter
+
+    def get_voter(self):
+        return get_object_or_404(Voter, admin=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.form_class(
+            instance=self.get_voter(),
+            initial={
+                "first_name": self.get_voter().admin.first_name,
+                "last_name": self.get_voter().admin.last_name,
+                "email": self.get_voter().admin.email,
+            },
+        )
+        context["voter"] = self.get_voter()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(
+            request.POST,
+            instance=self.get_voter(),
+            initial={
+                "first_name": self.get_voter().admin.first_name,
+                "last_name": self.get_voter().admin.last_name,
+                "email": self.get_voter().admin.email,
+            },
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.admin.first_name = form.cleaned_data.get("first_name")
+            instance.admin.last_name = form.cleaned_data.get("last_name")
+            try:
+                instance.admin.email = form.cleaned_data.get("email")
+                instance.admin.save()
+                instance.save()
+                form.save()
+                messages.success(request, "Your credentials were updated successfully")
+                return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+            except:
+                messages.error(
+                    request,
+                    "The email or admission number your updating to is already saved. Kindly check and retry",
+                )
+                return HttpResponseRedirect(request.META.get("HTTP_REFERER"))

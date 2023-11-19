@@ -1,0 +1,53 @@
+{% extends 'root.html' %} {% block content %}
+<section class="content">
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+      <div
+        class="alert alert-danger alert-dismissible"
+        id="alert"
+        style="display: none"
+      >
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-hidden="true"
+        >
+          &times;
+        </button>
+        <span class="message"></span>
+      </div>
+
+      <form
+        method="POST"
+        style="width: 100%; padding-top: 4rem !important"
+        action="{% url 'voterUpdate' %}"
+      >
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="box box-solid" id="">
+              <div class="box-header with-border">
+                <h3 class="box-title" style="padding: 0 20px;">
+                  <b>{{voter.admin.last_name}} {{voter.admin.first_name}} | {{voter.admission_number}}</b>
+                </h3>
+              </div>
+                <div class="form-group has-feedback" style="padding: 5px 20px;">{{form}}</div>
+                
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-flat"
+                  name="verify"
+                  style="margin-left: 20px; margin-bottom:10px;"
+                >
+                  <i class="glyphicon glyphicon-ok"></i> Update credentials
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock content %}

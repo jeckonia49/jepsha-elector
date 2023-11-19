@@ -29,7 +29,7 @@
               <img src="{% static 'images/jomo.png' %}" class="img-circle" alt="User Image">
 
               <p>
-                {{request.user.email}} <small>Admin Since {{request.user.date_joined|timesince}}</small>
+                {{request.user.email}} <small>User Since {{request.user.date_joined|timesince}} Ago</small>
               </p>
             </li>
             <li class="user-footer">

@@ -76,6 +76,11 @@
       <!---->
 
       {% if request.user.user_type == '2' %}
+      <li class="">
+        <a href="{% url 'voterDashboard' %}"
+          ><i class="fa fa-home"></i> <span>Dashboard</span></a
+        >
+      </li>
       <li class="header">WHISTLE BLOWING</li>
       <li class="">
         <a href="{% url 'complaint' %}"
@@ -90,12 +95,15 @@
           ><i class="fa fa-files-o"></i> <span>Proposal</span></a
         >
       </li>
-      <li class="header">Exit</li>
+      <li class="header">SETTINGS</li>
       <li class="">
-        <a href="{% url 'home' %}"
-          ><i class="fa fa-home"></i> <span>Home</span></a
+        <a href="{% url 'voterUpdate' %}"
+          ><i class="fa fa-cog"></i> <span>Update </span></a
         >
       </li>
+
+      <li class="header">Exit</li>
+
       <li class="">
         <a href="{% url 'account_logout' %}"
           ><i class="fa fa-arrow-left"></i> <span>Logout</span></a
