@@ -9,7 +9,7 @@ class Voter(models.Model):
     # phone = models.CharField(max_length=11, unique=True)  # Used for OTP
     voted = models.BooleanField(default=False)
     admission_number = models.CharField(max_length=100, unique=True)
-    year_of_study = models.PositiveIntegerField(default=1)
+    year_of_study = models.DecimalField(default=1.1, max_digits=2, decimal_places=1)
 
     def __str__(self):
         return self.admin.last_name + ", " + self.admin.first_name
@@ -29,7 +29,7 @@ class Candidate(models.Model):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     bio = models.TextField()
     admission_number = models.CharField(max_length=100, unique=True)
-    year_of_study = models.PositiveIntegerField(default=1)
+    year_of_study = models.DecimalField(default=1.1, max_digits=2, decimal_places=1)
 
     def __str__(self):
         return self.fullname
